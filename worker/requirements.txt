@@ -1,0 +1,7 @@
+supabase
+openai
+httpx
+pydantic
+python-dotenv
+pytest
+pytest-asyncio

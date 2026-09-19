@@ -1,0 +1,18 @@
+# Python (worker/)
+worker/.venv/
+worker/**/__pycache__/
+worker/**/*.pyc
+worker/.pytest_cache/
+worker/.ruff_cache/
+worker/.env
+
+# Node (web/) — web/ has its own .gitignore for build output, this covers env files
+web/.env
+web/.env.local
+web/.env.*.local
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
