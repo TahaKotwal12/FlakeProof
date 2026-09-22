@@ -3,5 +3,7 @@ openai
 httpx
 pydantic
 python-dotenv
+contree-sdk
+contree-client
 pytest
 pytest-asyncio

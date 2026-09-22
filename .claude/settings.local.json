@@ -2,7 +2,19 @@
   "permissions": {
     "allow": [
       "Bash(npx --yes shadcn@latest init -y -b neutral)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(python -c ' *)",
+      "Bash(python -m ruff check .)",
+      "Bash(python scripts/verify_models.py)",
+      "WebFetch(domain:docs.tokenfactory.nebius.com)",
+      "Bash(pip install *)",
+      "Read(//c/Users/kotwa/AppData/Roaming/Python/Python314/site-packages/contree_sdk/**)",
+      "Bash(xargs -I{} basename {})",
+      "Read(//c/Users/kotwa/AppData/Roaming/Python/Python314/site-packages/contree_client/**)",
+      "Bash(SDK=\"C:/Users/kotwa/AppData/Roaming/Python/Python314/site-packages/contree_sdk\" *)",
+      "Bash(find \"C:/Users/kotwa/AppData/Roaming/Python/Python314/site-packages/contree_sdk\" -name \"*.py\" | sort)",
+      "Bash(python -m pytest tests/ -v)"
     ]
   }
 }
