@@ -27,6 +27,7 @@ export const RUN_FAILURE_COPY: Record<string, string> = {
   install_failed: "We couldn't get the project installed in a sandbox after several attempts.",
   run_timeout: "This run took longer than the 45-minute budget and was stopped.",
   worker_lost: "The worker lost track of this run (likely a restart) — feel free to start a new one.",
+  internal_error: "Something went wrong while running this — feel free to try again.",
 };
 
 export function runFailureToMessage(error: string | null | undefined): string {

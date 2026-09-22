@@ -1,3 +1,4 @@
+import { ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -41,7 +42,13 @@ function DiagnosisTab({ flake }: { flake: FlakyTest }) {
               </span>
             )}
           </div>
-          {flake.confidence != null && <Progress value={flake.confidence * 100} className="h-1" />}
+          {flake.confidence != null && (
+            <Progress
+              value={flake.confidence * 100}
+              className="h-1"
+              aria-label={`Diagnosis confidence: ${Math.round(flake.confidence * 100)}%`}
+            />
+          )}
         </div>
       )}
       {flake.diagnosis_md ? (
@@ -130,21 +137,26 @@ function EvidenceTab({ flake }: { flake: FlakyTest }) {
       )}
       {flake.known_reports && flake.known_reports.length > 0 && (
         <div>
-          <p className="mb-2 text-xs font-medium text-muted-foreground">Known reports (via Tavily)</p>
-          <div className="flex flex-col gap-2">
+          <p className="mb-2 text-xs font-medium text-muted-foreground">Known reports</p>
+          <div className="flex flex-wrap gap-1.5">
             {flake.known_reports.map((report) => (
               <a
                 key={report.url}
                 href={report.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-lg border border-border p-2.5 text-xs transition-colors hover:bg-secondary/40"
+                title={report.relevance ? `${report.title} — ${report.relevance}` : report.title}
+                className={cn(
+                  "inline-flex max-w-full items-center gap-1 rounded-full border border-border",
+                  "bg-secondary/40 px-2.5 py-1 text-xs text-foreground transition-colors hover:bg-secondary"
+                )}
               >
-                <p className="font-medium text-foreground">{report.title}</p>
-                <p className="mt-0.5 line-clamp-2 text-muted-foreground">{report.snippet}</p>
+                <span className="truncate">{report.title}</span>
+                <ExternalLink className="size-3 shrink-0 text-muted-foreground" />
               </a>
             ))}
           </div>
+          <p className="mt-2 text-[10px] text-muted-foreground">Search context by Tavily</p>
         </div>
       )}
     </div>

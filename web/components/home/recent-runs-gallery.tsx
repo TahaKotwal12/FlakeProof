@@ -2,6 +2,7 @@ import Link from "next/link";
 import { FlaskConical } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
 import { ErrorState } from "@/components/error-state";
+import { RetryButton } from "@/components/retry-button";
 import { listRecentRuns } from "@/lib/run-list";
 import { createServerClient } from "@/lib/supabase";
 import { RunCard } from "./run-card";
@@ -40,7 +41,7 @@ export async function RecentRunsGallery() {
       </div>
     );
   } catch {
-    return <ErrorState title="Can't load recent runs" description="Please refresh the page." />;
+    return <ErrorState title="Can't load recent runs" action={<RetryButton />} />;
   }
 }
 

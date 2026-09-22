@@ -30,7 +30,8 @@ export function EvidenceMatrixTable({ evidence }: { evidence: FlakyEvidence | nu
                     "inline-flex min-w-14 items-center justify-center rounded px-1.5 py-0.5 font-mono tabular-nums",
                     rate === 0 && "text-muted-foreground",
                     rate > 0 && rate < 0.5 && "bg-status-flaky/15 text-status-flaky",
-                    rate >= 0.5 && "bg-status-fail/15 text-status-fail"
+                    // /6 not /15: see lib/status-meta.ts's TONE_CLASSES.fail comment (WCAG AA contrast).
+                    rate >= 0.5 && "bg-status-fail/6 text-status-fail"
                   )}
                 >
                   {result!.failures}/{result!.runs}

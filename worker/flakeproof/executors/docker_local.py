@@ -144,7 +144,13 @@ class DockerExecutor:
         try:
             with tempfile.TemporaryDirectory() as tmp_dir:
                 local_path = Path(tmp_dir) / (Path(path).name or "in")
-                local_path.write_text(content, encoding="utf-8")
+                # write_bytes, not write_text: write_text's default newline
+                # translation turns every \n into \r\n on Windows dev machines,
+                # which silently corrupts anything line-ending-sensitive written
+                # through this method -- a unified diff (git apply parses its
+                # own @@/+++ structural lines strictly) being the case that
+                # actually surfaced this live, as "error: corrupt patch".
+                local_path.write_bytes(content.encode("utf-8"))
                 await self._exec_checked(
                     ["cp", str(local_path), f"{container_name}:{path}"], timeout_s=_SETUP_TIMEOUT_S
                 )

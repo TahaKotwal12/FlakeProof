@@ -14,7 +14,36 @@
       "Read(//c/Users/kotwa/AppData/Roaming/Python/Python314/site-packages/contree_client/**)",
       "Bash(SDK=\"C:/Users/kotwa/AppData/Roaming/Python/Python314/site-packages/contree_sdk\" *)",
       "Bash(find \"C:/Users/kotwa/AppData/Roaming/Python/Python314/site-packages/contree_sdk\" -name \"*.py\" | sort)",
-      "Bash(python -m pytest tests/ -v)"
+      "Bash(python -m pytest tests/ -v)",
+      "Bash(python -m ruff check --fix .)",
+      "Bash(python -m pytest -q)",
+      "Bash(docker info *)",
+      "Bash(docker build *)",
+      "Bash(EXECUTOR=docker python \"C:/Users/kotwa/AppData/Local/Temp/claude/d--Flake-FlakeProof/8c2d3515-1335-4bb5-8672-642c681f3277/scratchpad/verify_s2_s5_pipeline.py\")",
+      "Bash(python -m ruff check flakeproof/executors/docker_local.py)",
+      "Bash(python \"C:/Users/kotwa/AppData/Local/Temp/claude/d--Flake-FlakeProof/8c2d3515-1335-4bb5-8672-642c681f3277/scratchpad/diag_read_write.py\")",
+      "Bash(python -m ruff check flakeproof/tavily_enrich.py flakeproof/stages/s3_diagnose.py)",
+      "Bash(python -m ruff check tests/test_tavily_enrich.py)",
+      "Bash(npm run *)",
+      "Bash(echo \"started, pid=$!\")",
+      "Bash(npx lighthouse *)",
+      "Bash(xargs grep -l \"<a \\\\|ExternalLink\\\\|Link href\")",
+      "Bash(curl -s http://localhost:4310/leaderboard)",
+      "Bash(curl -s http://localhost:4310/)",
+      "Bash(curl -s http://localhost:4310/leaderboard -o /tmp/lb.html -w \"%{http_code}\\\\n\")",
+      "Read(//tmp/**)",
+      "Bash(grep -o '.\\\\{80\\\\}aria-label.\\\\{80\\\\}' /tmp/lb.html)",
+      "Bash(grep -o '<a href=\"https://github.com/TahaKotwal12/FlakeProof\"[^>]*>' /tmp/lb.html)",
+      "Bash(rm -f lh-*.json *)",
+      "Bash(curl -s -o /tmp/icon.png -w \"icon: %{http_code} %{content_type} %{size_download} bytes\\\\n\" http://localhost:4310/icon)",
+      "Bash(curl -s -o /tmp/og.png -w \"og: %{http_code} %{content_type} %{size_download} bytes\\\\n\" http://localhost:4310/runs/x7Kp2mQ9aB/opengraph-image)",
+      "Bash(curl -s -o /tmp/og2.png -w \"og\\(missing slug\\): %{http_code} %{content_type} %{size_download} bytes\\\\n\" http://localhost:4310/runs/does-not-exist/opengraph-image)",
+      "Bash(npx vitest *)",
+      "Bash(python -m ruff check flakeproof/stages/s0_intake.py flakeproof/db.py)",
+      "Bash(python -m ruff check flakeproof/stages/s6_report.py)"
+    ],
+    "additionalDirectories": [
+      "D:\\Flake\\FlakeProof\\web"
     ]
   }
 }

@@ -1,0 +1,6 @@
+# FlakeProof evidence-run repo list (docs/06-CURSOR-PROMPTS.md Prompt 13).
+# One GitHub URL per line; '#' comments and blank lines are ignored.
+
+https://github.com/pypa/packaging
+
+https://github.com/kevin1024/vcrpy

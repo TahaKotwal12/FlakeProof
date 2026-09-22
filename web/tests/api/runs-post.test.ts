@@ -102,10 +102,10 @@ describe("POST /api/runs", () => {
     expect(body.slug).toBe("EXISTING01");
   });
 
-  it("returns 429 rate_limited once an IP has started 5 runs in the last hour", async () => {
+  it("returns 429 rate_limited once an IP has started 30 runs in the last hour", async () => {
     mockClient([
       { data: null, error: null }, // no active duplicate
-      { data: null, error: null, count: 5 }, // already at the per-IP cap
+      { data: null, error: null, count: 30 }, // already at the per-IP cap
     ]);
 
     const res = await POST(postRequest({ repo_url: "https://github.com/yourname/flakeproof-demo" }));
@@ -119,7 +119,7 @@ describe("POST /api/runs", () => {
     mockClient([
       { data: null, error: null }, // no active duplicate
       { data: null, error: null, count: 0 }, // under the per-IP cap
-      { data: null, error: null, count: 2 }, // already at the global active cap
+      { data: null, error: null, count: 5 }, // already at the global active cap
     ]);
 
     const res = await POST(postRequest({ repo_url: "https://github.com/yourname/flakeproof-demo" }));

@@ -16,11 +16,12 @@ import { createServerClient } from "@/lib/supabase";
 import { ACTIVE_STATUSES } from "@/lib/run-status";
 import { createRunBodySchema, formatZodIssue, normalizeRepoUrl } from "@/lib/validation";
 
-// "> 5 runs/hour per IP" / "> 2 globally active" (docs/04-API.md) — the Nth
-// request that would bring the count to N+1 above the limit is rejected, so
-// the limit itself is still the max allowed.
-const RATE_LIMIT_PER_IP_PER_HOUR = 5;
-const RATE_LIMIT_GLOBAL_ACTIVE = 2;
+// docs/04-API.md specs "> 5 runs/hour per IP" / "> 2 globally active" — the
+// Nth request that would bring the count to N+1 above the limit is rejected,
+// so the limit itself is still the max allowed. Temporarily raised for
+// manual/evidence-run testing; drop back to 5/2 before any real deploy.
+const RATE_LIMIT_PER_IP_PER_HOUR = 30;
+const RATE_LIMIT_GLOBAL_ACTIVE = 5;
 
 function getClient(): SupabaseClient | null {
   try {

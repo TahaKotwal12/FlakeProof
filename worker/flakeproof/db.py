@@ -185,6 +185,17 @@ async def claim_next_queued_run(client: Client) -> dict[str, Any] | None:
     return await asyncio.to_thread(_call)
 
 
+async def get_run(client: Client, run_id: str) -> dict[str, Any]:
+    """Fetch a single run row by id. Raises if it doesn't exist — stages are only
+    ever called with a run_id already claimed via `claim_next_queued_run()`.
+    """
+
+    def _call() -> dict[str, Any]:
+        return client.table("runs").select("*").eq("id", run_id).single().execute().data
+
+    return await asyncio.to_thread(_call)
+
+
 async def update_run_status(client: Client, run_id: str, status: RunStatus, **fields: Any) -> None:
     """Transition a run's status column and update any additional fields
     (e.g. error, env_image_id, totals, finished_at).
@@ -237,6 +248,77 @@ async def insert_test_stats(client: Client, rows: list[TestStatInsert]) -> list[
         return client.table("test_stats").insert(list(rows)).execute().data
 
     return await asyncio.to_thread(_call)
+
+
+async def upsert_test_stats(client: Client, rows: list[TestStatInsert]) -> list[dict[str, Any]]:
+    """Upsert test_stats rows on the `(run_id, test_id)` unique constraint — S2
+    overwrites the zero-count rows S1 seeded with real detect-phase aggregates.
+    """
+    if not rows:
+        return []
+
+    def _call() -> list[dict[str, Any]]:
+        return client.table("test_stats").upsert(list(rows), on_conflict="run_id,test_id").execute().data
+
+    return await asyncio.to_thread(_call)
+
+
+async def list_test_ids(client: Client, run_id: str) -> list[str]:
+    """The full collected node-id list for a run (seeded by S1), used to resolve
+    JUnit XML testcases back to real pytest nodeids (see `pytest_parse.match_node_ids`).
+    """
+
+    def _call() -> list[str]:
+        rows = client.table("test_stats").select("test_id").eq("run_id", run_id).execute().data
+        return [row["test_id"] for row in rows]
+
+    return await asyncio.to_thread(_call)
+
+
+async def list_flaky_tests(client: Client, run_id: str, *, statuses: list[FlakyStatus] | None = None) -> list[dict[str, Any]]:
+    """Fetch flaky_tests rows for a run, optionally filtered to specific statuses
+    (e.g. `['fix_proposed']` for S5's verification queue)."""
+
+    def _call() -> list[dict[str, Any]]:
+        query = client.table("flaky_tests").select("*").eq("run_id", run_id)
+        if statuses:
+            query = query.in_("status", statuses)
+        return query.execute().data
+
+    return await asyncio.to_thread(_call)
+
+
+async def list_test_stats(client: Client, run_id: str) -> list[dict[str, Any]]:
+    """Full test_stats rows for a run (S6 totals: tests_collected, always_failing counts)."""
+
+    def _call() -> list[dict[str, Any]]:
+        return client.table("test_stats").select("*").eq("run_id", run_id).execute().data
+
+    return await asyncio.to_thread(_call)
+
+
+async def count_rows(client: Client, table: str, run_id: str, **filters: Any) -> int:
+    """Row count for `table` scoped to `run_id`, with optional equality filters
+    (e.g. `status="fix_verified"`) -- used to assemble S6's `runs.totals`.
+    """
+
+    def _call() -> int:
+        query = client.table(table).select("id", count="exact").eq("run_id", run_id)
+        for key, value in filters.items():
+            query = query.eq(key, value)
+        response = query.execute()
+        return response.count or 0
+
+    return await asyncio.to_thread(_call)
+
+
+async def update_flaky_test(client: Client, flaky_test_id: str, **fields: Any) -> None:
+    """Patch one flaky_tests row (diagnosis, patch, verification results, status, ...)."""
+
+    def _call() -> None:
+        client.table("flaky_tests").update(fields).eq("id", flaky_test_id).execute()
+
+    await asyncio.to_thread(_call)
 
 
 async def insert_test_results(client: Client, rows: list[TestResultInsert]) -> list[dict[str, Any]]:

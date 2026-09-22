@@ -10,7 +10,10 @@ export type StatusTone = "pass" | "fail" | "flaky" | "info" | "neutral";
 
 export const TONE_CLASSES: Record<StatusTone, { text: string; bg: string; ring: string }> = {
   pass: { text: "text-status-pass", bg: "bg-status-pass/15", ring: "ring-status-pass/30" },
-  fail: { text: "text-status-fail", bg: "bg-status-fail/15", ring: "ring-status-fail/30" },
+  // /6 not /15: text-status-fail on bg-status-fail/15 measures 4.17:1 (WCAG AA
+  // needs 4.5:1) -- red's luminance is much lower than the other three tones
+  // at the same opacity, so it alone needs a lighter tint to keep the badge legible.
+  fail: { text: "text-status-fail", bg: "bg-status-fail/6", ring: "ring-status-fail/30" },
   flaky: { text: "text-status-flaky", bg: "bg-status-flaky/15", ring: "ring-status-flaky/30" },
   info: { text: "text-status-info", bg: "bg-status-info/15", ring: "ring-status-info/30" },
   neutral: { text: "text-muted-foreground", bg: "bg-muted", ring: "ring-border" },

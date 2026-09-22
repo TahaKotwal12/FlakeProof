@@ -18,7 +18,7 @@ export function RunCard({ run }: { run: RunListItem }) {
           <StatusBadge status={run.status} />
         </div>
         <p className="text-sm text-muted-foreground">{headline ?? "In progress…"}</p>
-        <RelativeTime iso={run.finished_at ?? run.created_at} className="text-xs text-muted-foreground/80" />
+        <RelativeTime iso={run.finished_at ?? run.created_at} className="text-xs text-muted-foreground" />
       </Card>
     </Link>
   );

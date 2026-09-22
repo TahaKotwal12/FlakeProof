@@ -1,7 +1,10 @@
 <!--
 ID: P4 · Purpose: patch_gen · Model: SMART (Nemotron Super/Ultra) · Stage: S4
 Output: JSON {"files": [...], "patch": str, "rationale_md": str}
-Source: docs/05-LLM-PROMPTS.md "P4 — Patch generator (stage S4)". Verbatim.
+Source: docs/05-LLM-PROMPTS.md "P4 — Patch generator (stage S4)". Verbatim,
+except one placeholder added for the retry described in docs/03-PIPELINE.md
+Stage 4 step 2 ("Fail -> one retry with the reviewer's objection appended"):
+  {previous_attempt_objection} -- empty string on the first attempt.
 -->
 
 ## System
@@ -40,6 +43,8 @@ conftest.py (if any):
 
 Sample failure log under the triggering condition:
 {failure_log_tail}
+
+{previous_attempt_objection}
 
 Return JSON:
 {"files": [{"path": "tests/test_api.py", "action": "modify"}],

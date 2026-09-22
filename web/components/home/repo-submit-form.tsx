@@ -34,9 +34,12 @@ export function RepoSubmitForm() {
   const [submitting, setSubmitting] = useState(false);
   const [urlError, setUrlError] = useState<string | null>(null);
 
-  async function handleSubmit(event: FormEvent) {
+  function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    void attemptSubmit();
+  }
 
+  async function attemptSubmit() {
     if (!normalizeRepoUrl(repoUrl)) {
       setUrlError("Enter a GitHub repo URL, like https://github.com/owner/repo.");
       return;
@@ -77,9 +80,13 @@ export function RepoSubmitForm() {
 
       toast.error("Couldn't start run", {
         description: errorCodeToMessage(body.error?.code ?? "internal_error", body.error?.message),
+        action: { label: "Retry", onClick: () => void attemptSubmit() },
       });
     } catch {
-      toast.error("Network error", { description: "Couldn't reach FlakeProof — check your connection." });
+      toast.error("Network error", {
+        description: "Couldn't reach FlakeProof — check your connection.",
+        action: { label: "Retry", onClick: () => void attemptSubmit() },
+      });
     } finally {
       setSubmitting(false);
     }

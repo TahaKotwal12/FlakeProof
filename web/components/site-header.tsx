@@ -19,6 +19,7 @@ export function SiteHeader() {
             href="https://github.com/TahaKotwal12/FlakeProof"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="GitHub"
             className="flex items-center gap-1.5 transition-colors hover:text-foreground"
           >
             <ExternalLink className="size-4" />

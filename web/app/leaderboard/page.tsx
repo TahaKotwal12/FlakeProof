@@ -3,11 +3,13 @@ import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import { ErrorState } from "@/components/error-state";
+import { RetryButton } from "@/components/retry-button";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { LeaderboardEmpty } from "@/components/leaderboard/leaderboard-empty";
 import { LeaderboardStats } from "@/components/leaderboard/leaderboard-stats";
 import { LeaderboardTable } from "@/components/leaderboard/leaderboard-table";
+import { SpotlightRuns } from "@/components/leaderboard/spotlight-runs";
 import { getLeaderboardData } from "@/lib/leaderboard";
 import { createServerClient } from "@/lib/supabase";
 
@@ -41,13 +43,21 @@ export default async function LeaderboardPage() {
   }
 
   try {
-    const { rows, heroStats } = await getLeaderboardData(client);
+    const { rows, spotlights, heroStats } = await getLeaderboardData(client);
     return (
       <LeaderboardShell>
         <LeaderboardStats stats={heroStats} />
-        <div className="mt-8">{rows.length === 0 ? <LeaderboardEmpty /> : <LeaderboardTable rows={rows} />}</div>
+        <div className="mt-8">
+          <SpotlightRuns runs={spotlights} />
+          {rows.length === 0 ? <LeaderboardEmpty /> : <LeaderboardTable rows={rows} />}
+        </div>
         <div className="mt-8 flex flex-col items-center gap-2 text-center text-xs text-muted-foreground">
-          <p>Ranked by flaky tests caught, from completed public runs.</p>
+          <p className="max-w-2xl">
+            Every row is a real repo: FlakeProof forks one sandbox checkpoint into N bit-identical VMs and runs the
+            suite in each, so a mixed pass/fail outcome across forks is provable flakiness, not noise. Click a row
+            for the full evidence, or open{" "}
+            <span className="font-mono">report.md</span> directly for the underlying data and reproduction steps.
+          </p>
           <Button asChild size="sm" variant="outline">
             <Link href="/">Scan your repo</Link>
           </Button>
@@ -57,7 +67,7 @@ export default async function LeaderboardPage() {
   } catch {
     return (
       <LeaderboardShell>
-        <ErrorState title="Can't load the leaderboard" description="Please refresh the page." />
+        <ErrorState title="Can't load the leaderboard" action={<RetryButton />} />
       </LeaderboardShell>
     );
   }

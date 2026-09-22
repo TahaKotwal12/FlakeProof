@@ -103,11 +103,12 @@ export interface FlakyEvidence {
   sample_failures: SampleFailure[];
 }
 
-// flaky_tests.known_reports jsonb shape (Tavily findings)
+// flaky_tests.known_reports jsonb shape (Tavily findings, docs/05-LLM-PROMPTS.md P7)
 export interface KnownReport {
   title: string;
   url: string;
   snippet: string;
+  relevance?: string;
 }
 
 // ============ tables ============

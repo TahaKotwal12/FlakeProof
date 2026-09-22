@@ -25,6 +25,7 @@ export interface LeaderboardRow {
 
 export interface LeaderboardData {
   rows: LeaderboardRow[];
+  spotlights: LeaderboardRow[];
   heroStats: {
     reposScanned: number;
     identicalRunsExecuted: number;
@@ -36,15 +37,16 @@ export interface LeaderboardData {
 export async function getLeaderboardData(client: SupabaseClient): Promise<LeaderboardData> {
   const { data: runsData, error: runsError } = await client
     .from("runs")
-    .select("id, slug, repo_owner, repo_name, repo_url, commit_sha, totals")
+    .select("id, slug, repo_owner, repo_name, repo_url, commit_sha, totals, config")
     .eq("status", "done")
     .order("created_at", { ascending: false })
     .limit(MAX_ROWS);
   if (runsError) throw new Error(runsError.message);
 
   const runs = (runsData ?? []) as unknown as Array<
-    Pick<Run, "id" | "slug" | "repo_owner" | "repo_name" | "repo_url" | "commit_sha" | "totals">
+    Pick<Run, "id" | "slug" | "repo_owner" | "repo_name" | "repo_url" | "commit_sha" | "totals" | "config">
   >;
+  const pinnedRunIds = new Set(runs.filter((r) => r.config?.pinned).map((r) => r.id));
 
   const worstByRun = new Map<string, { test_id: string; failure_rate: number }>();
   if (runs.length > 0) {
@@ -87,5 +89,14 @@ export async function getLeaderboardData(client: SupabaseClient): Promise<Leader
     { reposScanned: 0, identicalRunsExecuted: 0, flakyTestsCaught: 0, fixesVerified: 0 }
   );
 
-  return { rows, heroStats };
+  // Spotlights: runs explicitly pinned (runs.config.pinned, set at submission
+  // time or via worker/scripts/batch_scan.py's evidence runs) with at least
+  // one verified fix — the hand-picked "best proof" examples for judges,
+  // separate from the sortable full table.
+  const spotlights = rows
+    .filter((row) => (row.totals?.fixed_verified ?? 0) > 0)
+    .filter((row) => pinnedRunIds.has(row.id))
+    .slice(0, 3);
+
+  return { rows, spotlights, heroStats };
 }

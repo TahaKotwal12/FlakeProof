@@ -37,9 +37,13 @@ export function CancelDialog({
       }
       toast.error("Couldn't cancel", {
         description: errorCodeToMessage(body.error?.code ?? "internal_error", body.error?.message),
+        action: { label: "Retry", onClick: () => void confirmCancel() },
       });
     } catch {
-      toast.error("Network error", { description: "Couldn't reach FlakeProof — check your connection." });
+      toast.error("Network error", {
+        description: "Couldn't reach FlakeProof — check your connection.",
+        action: { label: "Retry", onClick: () => void confirmCancel() },
+      });
     } finally {
       setCanceling(false);
     }
